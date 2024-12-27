@@ -8,8 +8,6 @@ if [[ $EUID -ne 0 ]]; then
     exit
 fi
 wait
-#Remove file at the end of script; uncomment to make it work
-#rm -- "$0"
 #list of variables
 #Color variables for error ouput
 #flashred="\033[5;31;40m"
@@ -23,6 +21,7 @@ export kernel=`uname -r | awk {'print substr($0, length($0)-2, 3)'}` #zen or lts
 export linuxkernal=`uname -r | awk {'print substr($0, length($0)-6, 4)'}` #arch
 export cpu=`cat /proc/cpuinfo |grep vendor_id | awk '!seen[$0]++' | awk {'print $3'}`
 export mygpu=`lspci -v |grep VGA | awk {'print $5'}`
+export which_os=$(cat /etc/*release | grep PRETTY_NAME | cut -d '=' -f2- | tr -d '"' | awk '{print $1}')
 #This script needs to be run as root
 #make something that checks this and exits when script is not executed as root
 #Disable systemd sleep services
