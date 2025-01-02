@@ -39,8 +39,15 @@ else
     sleep 5
 fi
 wait
+#Write the correct settings for Debian OS
+#Commenting part that searches on a cdrom instead of searching the internet
+debiancd="deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Binary-1 with firmware 20241109-11:05]/ bookworm contrib main non-free-firmware"
+debianNOcd="#deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Binary-1 with firmware 20241109-11:05]/ bookworm contrib main non-free-firmware"
+debiannew="s|$debiancd|$debianNOcd|"
+if [[ "$whichOS" == "Debian" ]]; then
+    sed -i "$debiannew" /etc/apt/sources.list
+fi
 #Symlink root KDE to User KDE (else we don't see the theme switching, only after logging out/rebooting)
-#ln -s /home/$USER/.kde /root/.kde ->>> mabye also not the way to go
 #Change to dark mode
 if [[ $(echo $XDG_CURRENT_DESKTOP) == "KDE" ]]; then
     plasma-apply-colorscheme BreezeDark 2> /dev/null && sudo --user=$USER plasma-apply-colorscheme BreezeDark 2> /dev/null
