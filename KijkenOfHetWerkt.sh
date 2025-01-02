@@ -72,6 +72,14 @@ elif [[ "$cpu" == "$intel" ]] && [[ "$whichOS" == "Debian" ]]; then
     sudo apt-get install intel-microcode
 elif [[ "$cpu" == "$AMDCPU" ]] && [[ "$whichOS" == "Debian" ]]; then
     sudo apt-get install amd64-microcode
+elif [[ "$cpu" == "$intel" ]] && [[ "$whichOS" == "Ubuntu" ]]; then
+    sudo apt install intel-microcode
+elif [[ "$cpu" == "$AMDCPU" ]] && [[ "$whichOS" == "Ubuntu" ]]; then
+    sudo apt install amd64-microcode
+elif [[ "$cpu" == "$intel" ]] && [[ "$whichOS" == "Rocky" ]]; then
+    sudo yum install microcode_ctl
+elif [[ "$cpu" == "$AMDCPU" ]] && [[ "$whichOS" == "Rocky" ]]; then
+    sudo yum install microcode_ctl
 else
     echo -e "${Red}Error: You don't have an Intel or AMD CPU!${Reset}"
     echo -e "${Red}Error: OR no Arch Linux or Debian!${Reset}"
