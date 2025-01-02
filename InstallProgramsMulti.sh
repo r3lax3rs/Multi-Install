@@ -278,7 +278,7 @@ if [[ "$whichOS" == "Arch" ]]; then
     echo -e "${Cyan}QEMU/KVM Virtmanager has been installed"
     wait
 #Enable virt manager thing that causes an error after a reboot and you want to start it:
-printf "%s\n" "$PWonce" | sudo -S virsh net-autostart default
+    printf "%s\n" "$PWonce" | sudo -S virsh net-autostart default
 else
     echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
 fi
