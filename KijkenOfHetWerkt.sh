@@ -67,21 +67,21 @@ else
 fi
 wait
 #Installing right headers for linux/linux-zen
-if [[ "$kernel" == "zen" ]]; then
+if [[ "$kernel" == "zen" && "$whichOS" = "Arch" ]]; then
     echo "linux-zen kernal detected"
     sleep 2
     pacman -S linux-zen-headers linux-firmware linux-headers --needed --noconfirm
-elif [[ "$kernel" == "lts" ]]; then
+elif [[ "$kernel" == "lts" && "$whichOS" = "Arch" ]]; then
     echo "Linux-lts kernel detected"
     sleep 2
     pacman -S linux-lts-headers linux-headers --needed --noconfirm
-elif [[ "$linuxkernal" == "arch" ]]; then
+elif [[ "$linuxkernal" == "arch" && "$whichOS" = "Arch" ]]; then
     echo "default linux kernel detected"
     sleep 2
     pacman -S linux-headers linux-firmware --needed --noconfirm
 else
-    
     echo -e "${Red}You don't have linux, linux-lts or linux-zen kernel installed on your system!${Reset}"
+    echo -e "${Cyan}You use kernel: ${Red}${kernel}${Cyan} & OS: ${Red}${whichOS}${Cyan}"
     echo -e "${Red}No kernal headers will be installed! Script will continue in 5s${Reset}"
     sleep 5
 fi
@@ -188,15 +188,29 @@ elif
 fi
 wait
 #Adding user to video group
-echo "Adding current user: $USER to video group"
+echo -e "Adding current user: ${Red}${USER}${Cyan} to video group"
 usermod -aG video $USER
 wait
-#Write settings to GRUB & mkinitcpio at the end of everything
-grub-mkconfig -o /boot/grub/grub.cfg && mkinitcpio -P 2> /dev/null
-echo -e "${Cyan}All settings have been written to the configs.${Reset}"
-echo -e "${Red}Please reboot your system${Reset}"
-sleep 10
-wait
+#for Debian we wont get added to sudo group by default:
+if [[ "$whichOS" == "Debian" ]]; then
+    usermod -aG sudo $USER
+fi
+#Write settings to GRUB & mkinitcpio at the end of the script for ARCH
+if [[ "$whichOS" == "Arch" ]]; then
+    grub-mkconfig -o /boot/grub/grub.cfg && mkinitcpio -P 2> /dev/null
+    echo -e "${Cyan}All settings have been written to the configs.${Reset}"
+    echo -e "${Red}Please reboot your system${Reset}"
+    sleep 10
+    wait
+elif [[ "$whichOS" != "Arch" ]]; then
+    grub-mkconfig -o /boot/grub/grub.cfg 2> /dev/null
+    echo -e "${Cyan}All settings have been written to the configs.${Reset}"
+    echo -e "${Red}Please reboot your system${Reset}"
+    sleep 10
+    wait
+else
+    echo -e "${Red}Error!!!!!${Cyan}"
+fi
 #
 #
 #Debian install
