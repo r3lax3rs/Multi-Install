@@ -128,8 +128,26 @@ elif [[ "$whichOS" == "Debian" | "$whichOS" == "Ubuntu" ]]; then
 else
     echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
 fi  
-#Install Google Chrome
-yay -S google-chrome --needed --noconfirm
+#Install Google Chrome ---> Check if they all work
+if [[ "$whichOS" == "Arch" ]]; then
+    yay -S google-chrome --needed --noconfirm
+elif [[ "$whichOS" == "Debian" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S curl -s https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+    wait
+    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt update
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt install google-chrome-stable
+elif [[ "$whichOS" == "Ubuntu" ]]; then
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    wait
+    printf "%s\n" "$PWonce" | sudo -S dpkg -i google-chrome-stable_current_amd64.deb
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt install -f
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi
 #Install NordVPN
 if [[ "$whichOS" == "Arch" ]]; then
     yay -S nordvpn-bin --needed --noconfirm
