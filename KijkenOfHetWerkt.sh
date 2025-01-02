@@ -32,7 +32,11 @@ wait
 mv /home/$USER/ArchInstallScript/.bash_aliases /home/$USER/
 wait
 #Disable systemd sleep services
-systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+if [[ $(echo $XDG_CURRENT_DESKTOP) == "KDE" ]]; then
+    systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+else
+    echo -e "You dont have KDE installed but ${Red}${XDG_CURRENT_DESKTOP}${Cyan}" && exit
+fi
 wait
 #Symlink root KDE to User KDE (else we don't see the theme switching, only after logging out/rebooting)
 #ln -s /home/$USER/.kde /root/.kde ->>> mabye also not the way to go
