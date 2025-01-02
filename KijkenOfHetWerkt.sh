@@ -64,13 +64,18 @@ else
 fi
 wait
 #Installing intel-ucode for intel machines
-if [[ "$cpu" == "$intel" ]]; then
+if [[ "$cpu" == "$intel" ]] && [[ "$whichOS" == "Arch" ]]; then
     pacman -S intel-ucode --needed --noconfirm
-elif [[ "$cpu" == "$AMDCPU" ]]; then
+elif [[ "$cpu" == "$AMDCPU" ]] && [[ "$whichOS" == "Arch" ]]; then
     pacman -S amd-ucode --needed --noconfirm
+elif [[ "$cpu" == "$intel" ]] && [[ "$whichOS" == "Debian" ]]; then
+    sudo apt-get install intel-microcode
+elif [[ "$cpu" == "$AMDCPU" ]] && [[ "$whichOS" == "Debian" ]]; then
+    sudo apt-get install amd64-microcode
 else
     echo -e "${Red}Error: You don't have an Intel or AMD CPU!${Reset}"
-    echo -e "${Red}No ucode will be installed${Reset}"
+    echo -e "${Red}Error: OR no Arch Linux or Debian!${Reset}"
+    echo -e "${Red}No ucode (microcode) will be installed${Reset}"
     echo -e "${Red}Skipping to next step in 3s${Reset}"
     sleep 3
 fi
@@ -152,17 +157,3 @@ sed -i "$debiannew" /etc/apt/sources.list
 sudo apt-get update && sudo apt-get upgrade
 #Install git & vim
 sudo apt-get install git vim
-#edit bashrc so "ll" works
-alias1="#alias ll='ls -l'"
-alias2="alias ll='ls -la'"
-aliasnew="s|$alias1|$alias2|"
-sed -i "$aliasnew" home/$USER/.bashrc
-#Install ucode for either intel/amd
-if [[ "$cpu" == "$intel" ]]; then
-    sudo apt-get install intel-microcode
-else [[ "$cpu" == "$AMDCPU" ]]; then
-    sudo apt-get install amd64-microcode
-else
-    echo -e "${Red}Skipping microcode install!${Cyan}"
-    sleep 3
-fi
