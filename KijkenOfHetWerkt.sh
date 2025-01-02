@@ -197,7 +197,7 @@ usermod -aG video $USER
 wait
 #for Debian we wont get added to sudo group by default:
 if [[ "$whichOS" == "Debian" ]]; then
-    usermod -aG sudo $USER
+    sudo usermod -aG sudo $USER
 fi
 #Write settings to GRUB & mkinitcpio at the end of the script for ARCH
 if [[ "$whichOS" == "Arch" ]]; then
