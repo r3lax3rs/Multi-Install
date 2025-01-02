@@ -35,13 +35,18 @@ wait
 if [[ $(echo $XDG_CURRENT_DESKTOP) == "KDE" ]]; then
     systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
 else
-    echo -e "You dont have KDE installed but ${Red}${XDG_CURRENT_DESKTOP}${Cyan}" && exit
+    echo -e "You dont have KDE installed but ${Red}${XDG_CURRENT_DESKTOP}${Cyan}"
+    sleep 5
 fi
 wait
 #Symlink root KDE to User KDE (else we don't see the theme switching, only after logging out/rebooting)
 #ln -s /home/$USER/.kde /root/.kde ->>> mabye also not the way to go
 #Change to dark mode
-plasma-apply-colorscheme BreezeDark 2> /dev/null && sudo --user=$USER plasma-apply-colorscheme BreezeDark 2> /dev/null
+if [[ $(echo $XDG_CURRENT_DESKTOP) == "KDE" ]]; then
+    plasma-apply-colorscheme BreezeDark 2> /dev/null && sudo --user=$USER plasma-apply-colorscheme BreezeDark 2> /dev/null
+else
+    echo -e "You dont have KDE installed but ${Red}${XDG_CURRENT_DESKTOP}${Cyan}"
+    sleep 5
 wait
 #lookandfeeltool -a org.kde.breezedark.desktop --> idk if this is the right way
 #First lets do a first time update of our system
