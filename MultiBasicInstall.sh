@@ -145,4 +145,5 @@ wait
 #Commenting part that searches on a cdrom instead of searching the internet
 debiancd="deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Binary-1 with firmware 20241109-11:05]/ bookworm contrib main non-free-firmware"
 debianNOcd="#deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Binary-1 with firmware 20241109-11:05]/ bookworm contrib main non-free-firmware"
-sed -i 's|$debiancd|$debianNOcd|'
+debiannew="s|$debiancd|$debianNOcd|"
+sed -i "$debiannew" /etc/apt/sources.list
