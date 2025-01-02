@@ -45,7 +45,21 @@ plasma-apply-colorscheme BreezeDark 2> /dev/null && sudo --user=$USER plasma-app
 wait
 #lookandfeeltool -a org.kde.breezedark.desktop --> idk if this is the right way
 #First lets do a first time update of our system
-pacman -Syu --noconfirm 2> /dev/null
+if [[ "$whichOS" == "Arch" ]]; then
+    pacman -Syu --noconfirm 2> /dev/null
+elif [[ "$whichOS" == "Rocky" ]]; then
+    sudo dnf update && sudo dnf upgrade
+elif [[ "$whichOS" == "Ubuntu" ]]; then
+    sudo apt update && sudo apt upgrade
+elif [[ "$whichOS" == "Debian" ]]; then
+    sudo apt-get update && sudo apt-get upgrade
+else
+    clear
+    echo -e "${Red}Cant update system since your OS is not supported by this script!${Cyan}"
+    echo -e "${Cyan}You have ${Red}${whichOS}${Cyan}installed."
+    echo -e "${Red}Please update manually before continuing this script${Cyan}"
+    sleep 10
+fi
 wait
 #Installing right headers for linux/linux-zen
 if [[ "$kernel" == "zen" ]]; then
