@@ -33,18 +33,24 @@ fi
 wait
 #Before we are gong to install yay, lets download dependencies
 #This way makepkg wont invoke pw for dependencies
-printf "%s\n" "$PWonce" | sudo -S pacman -S go --noconfirm --needed
-wait
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S go --noconfirm --needed
+    wait
 #Let's first install yay; a packet manager
-git clone https://aur.archlinux.org/yay.git
-wait
-cd yay
-makepkg -s --noconfirm --needed
-wait
-printf "%s\n" "$PWonce" | sudo -S pacman -U *.pkg.tar.zst --noconfirm
+    git clone https://aur.archlinux.org/yay.git
+    wait
+    cd yay
+    makepkg -s --noconfirm --needed
+    wait
+    printf "%s\n" "$PWonce" | sudo -S pacman -U *.pkg.tar.zst --noconfirm
+    wait
 #Now let's update yay; NEVER RUN 'yay -Syu' as SUDO or ROOT!!!
-yay -Syu --noconfirm
-wait
+    yay -Syu --noconfirm
+    wait
+else
+    echo -e "${Red}You don't have Arch Linux; Can't install yay!${Cyan}"
+    sleep 5
+fi
 #Let's install our programs
 #Install Brave Browser
 if [[ "$whichOS" == "Arch" ]]; then
@@ -84,7 +90,30 @@ else
     sleep 3
 fi
 #Install Steam
-printf "%s\n" "$PWonce" | sudo -S pacman -S steam --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S steam --needed --noconfirm
+elif [[ "$whichOS" == "Debian" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S apt install software-properties-common apt-transport-https dirmngr ca-certificates curl -y
+    printf "%s\n" "$PWonce" | sudo -S dpkg --add-architecture i386 && sudo apt update
+    curl -s http://repo.steampowered.com/steam/archive/stable/steam.gpg | sudo tee /usr/share/keyrings/steamgpg > /dev/null
+    echo deb [arch=amd64,i386 signed-by=/usr/share/keyrings/steam.gpg] http://repo.steampowered.com/steam/ stable steam | sudo tee /etc/apt/sources.list.d/steam.list
+    printf "%s\n" "$PWonce" | sudo -S apt update -y
+    printf "%s\n" "$PWonce" | sudo -S apt install libgl1-mesa-dri:amd64 -y
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt install libgl1-mesa-dri:i386 -y
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt install libgl1-mesa-glx:amd64 -y
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt install libgl1-mesa-glx:i386 -y
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt install steam-launcher -y
+elif [[ "$whichOS" == "Ubuntu" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S apt install steam
+else
+    echo -e "${Cyan}You have another distro, OS: ${Red}${whichOS}${Cyan}"
+    echo -e "${Red}You have to install manually!${Cyan}"
+    sleep 5
+fi
 #Install Discord
 printf "%s\n" "$PWonce" | sudo -S pacman -S discord --needed --noconfirm
 #Install Spotify
