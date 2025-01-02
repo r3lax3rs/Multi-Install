@@ -137,7 +137,7 @@ else
     echo -e "${Red}Will do nothing & continue script!${Cyan}"
 fi
 wait
-#Cehck if /etc/pacman.d/hooks/ directory exists; if not adding hooks map
+#Check if /etc/pacman.d/hooks/ directory exists; if not adding hooks map
 if [ -d "/etc/pacman.d/hooks/" ]; then
     echo -e "${Cyan}Directory already exists!${Reset}"
 elif [[ "$whichOS" == "Arch" ]] && [[ "$kernel" != "zen" ]] && [ ! -d "/etc/pacman.d/hooks/" ]; then
@@ -148,9 +148,6 @@ elif [[ "$whichOS" == "Arch" ]] && [[ "$kernel" != "zen" ]] && [ ! -d "/etc/pacm
 else
     echo -e "${Cyan}You are not using Arch but ${Red}${whichOS}${Cyan}. Skipping this part..."
 fi
-wait
-#Adding Nvidia hook for updates
-cp /home/$USER/ArchInstallScript/nvidia.hook /etc/pacman.d/hooks/
 wait
 #Check what settings needs to be overwritten based on kernel + gpu hook
 old_path="#HookDir     = /etc/pacman.d/hooks/"
@@ -218,16 +215,3 @@ elif [[ "$whichOS" != "Arch" ]]; then
 else
     echo -e "${Red}Error!!!!!${Cyan}"
 fi
-#
-#
-#Debian install
-#$whichOS should work
-#Commenting part that searches on a cdrom instead of searching the internet
-debiancd="deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Binary-1 with firmware 20241109-11:05]/ bookworm contrib main non-free-firmware"
-debianNOcd="#deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Binary-1 with firmware 20241109-11:05]/ bookworm contrib main non-free-firmware"
-debiannew="s|$debiancd|$debianNOcd|"
-sed -i "$debiannew" /etc/apt/sources.list
-#First time update
-sudo apt-get update && sudo apt-get upgrade
-#Install git & vim
-sudo apt-get install git vim
