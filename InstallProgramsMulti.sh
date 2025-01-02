@@ -131,7 +131,11 @@ else
     sleep 5
 fi
 #Install Discord
-printf "%s\n" "$PWonce" | sudo -S pacman -S discord --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S discord --needed --noconfirm
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi
 #Install Spotify
 if [[ "$whichOS" == "Arch" ]]; then
     yay -S spotify --needed --noconfirm
@@ -181,35 +185,48 @@ else
     sleep 5
 fi
 #Install Telegram Desktop App
-printf "%s\n" "$PWonce" | sudo -S pacman -S telegram-desktop --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S telegram-desktop --needed --noconfirm
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi  
 #Install Geany (notepad)
-printf "%s\n" "$PWonce" | sudo -S pacman -S geany --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S geany --needed --noconfirm
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi
 #Install OpenTabletDriver
 #First lets install dependencies
-printf "%s\n" "$PWonce" | sudo -S pacman -S netstandard-targeting-pack dotnet-targeting-pack netstandard-targeting-pack oniguruma dotnet-sdk libcom_err.so libverto-module-base sh libreadline.so libgdbm.so libncursesw.so gcc-libs glibc icu krb5 libunwind linux-api-headers openssl zlib bash e2fsprogs keyutils libcom_err.so libldap lmdb xz libsasl readline util-linux-libs gdbm ncurses sqlite jq --noconfirm
-wait
-printf "%s\n" "$PWonce" | sudo -S pacman -S dotnet-runtime dotnet-host --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S netstandard-targeting-pack dotnet-targeting-pack netstandard-targeting-pack oniguruma dotnet-sdk libcom_err.so libverto-module-base sh libreadline.so libgdbm.so libncursesw.so gcc-libs glibc icu krb5 libunwind linux-api-headers openssl zlib bash e2fsprogs keyutils libcom_err.so libldap lmdb xz libsasl readline util-linux-libs gdbm ncurses sqlite jq --noconfirm
+    wait
+    printf "%s\n" "$PWonce" | sudo -S pacman -S dotnet-runtime dotnet-host --needed --noconfirm
 # Downloads the pkgbuild from the AUR.
-git clone https://aur.archlinux.org/opentabletdriver.git
-wait
+    git clone https://aur.archlinux.org/opentabletdriver.git
+    wait
 # Changes into the correct directory, pulls needed dependencies, then installs OpenTabletDriver
-cd opentabletdriver
-wait
-makepkg -s --noconfirm --needed
-wait
-printf "%s\n" "$PWonce" | sudo -S pacman -U *.pkg.tar.zst --noconfirm
+    cd opentabletdriver
+    wait
+    makepkg -s --noconfirm --needed
+    wait
+    printf "%s\n" "$PWonce" | sudo -S pacman -U *.pkg.tar.zst --noconfirm
 # Clean up leftovers
-cd ..
-rm -rf opentabletdriver
-wait
+    cd ..
+    rm -rf opentabletdriver
+    wait
 # Regenerate initramfs
-printf "%s\n" "$PWonce" | sudo -S mkinitcpio -P
-wait
+    printf "%s\n" "$PWonce" | sudo -S mkinitcpio -P
+    wait
 # Unload kernel modules
-printf "%s\n" "$PWonce" | sudo -S rmmod wacom hid_uclogic
-wait
+    printf "%s\n" "$PWonce" | sudo -S rmmod wacom hid_uclogic
+    wait
 #Enable Opentabletdriver
-systemctl --user enable opentabletdriver.service --now
+    systemctl --user enable opentabletdriver.service --now
+    wait
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi
 #Install 1password
 if [[ "$whichOS" == "Arch" ]]; then
     curl -sS https://downloads.1password.com/linux/keys/1password.asc | gpg --import
