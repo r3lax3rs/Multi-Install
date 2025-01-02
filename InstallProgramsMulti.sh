@@ -3,6 +3,8 @@
 export Red='\e[38;5;196m'
 export Reset='\033[0m'
 export Cyan='\e[38;5;87m'
+#other variables
+export whichOS=$(cat /etc/*release | grep PRETTY_NAME | cut -d '=' -f2- | tr -d '"' | awk '{print $1}')
 # Make sure this script is run as root
 if [[ $EUID -eq 0 ]]; then
     echo
@@ -209,14 +211,45 @@ wait
 #Enable Opentabletdriver
 systemctl --user enable opentabletdriver.service --now
 #Install 1password
-curl -sS https://downloads.1password.com/linux/keys/1password.asc | gpg --import
-wait
-git clone https://aur.archlinux.org/1password.git
-wait
-cd 1password
-wait
-makepkg -s --noconfirm --needed
-printf "%s\n" "$PWonce" | sudo -S pacman -U *.pkg.tar.zst --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    curl -sS https://downloads.1password.com/linux/keys/1password.asc | gpg --import
+    wait
+    git clone https://aur.archlinux.org/1password.git
+    wait
+    cd 1password
+    wait
+    makepkg -s --noconfirm --needed
+    printf "%s\n" "$PWonce" | sudo -S pacman -U *.pkg.tar.zst --noconfirm
+elif [[ "$whichOS" == "Debian" | "$whichOS" == "Ubuntu" ]]; then
+    curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
+    wait
+    echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/amd64 stable main' | sudo tee /etc/apt/sources.list.d/1password.list
+    wait
+    printf "%s\n" "$PWonce" | sudo -S mkdir -p /etc/debsig/policies/AC2D62742012EA22/
+    wait
+    printf "%s\n" "$PWonce" | sudo -S curl -sS https://downloads.1password.com/linux/debian/debsig/1password.pol | sudo tee /etc/debsig/policies/AC2D62742012EA22/1password.pol
+    wait
+    printf "%s\n" "$PWonce" | sudo -S mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
+    wait
+    printf "%s\n" "$PWonce" | sudo -S curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt update && sudo apt install 1password
+elif [[ "$whichOS" == "Rocky" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S rpm --import https://downloads.1password.com/linux/keys/1password.asc
+    wait
+    printf "%s\n" "$PWonce" | sudo -S sh -c 'echo -e "[1password]\nname=1Password Stable Channel\nbaseurl=https://downloads.1password.com/linux/rpm/stable/\$basearch\nenabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=\"https://downloads.1password.com/linux/keys/1password.asc\"" > /etc/yum.repos.d/1password.repo'
+    wait
+    sudo dnf install 1password
+    wait
+elif [[ "$whichOS" == "openSUSE" ]]; then
+   printf "%s\n" "$PWonce" | sudo -S rpm --import https://downloads.1password.com/linux/keys/1password.asc
+    wait
+    printf "%s\n" "$PWonce" | sudo -S zypper addrepo https://downloads.1password.com/linux/rpm/stable/x86_64 1password
+    wait
+    printf "%s\n" "$PWonce" | sudo -S zypper install 1password
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi
 #Install everything needed for QEMU/KVM Virtmanager
 printf "%s\n" "$PWonce" | sudo -S pacman -S qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf dnsmasq swtpm guestfs-tools libosinfo tuned --noconfirm --needed
 wait
