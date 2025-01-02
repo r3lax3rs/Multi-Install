@@ -150,3 +150,8 @@ debiannew="s|$debiancd|$debianNOcd|"
 sed -i "$debiannew" /etc/apt/sources.list
 #Install git & vim
 sudo apt-get install git vim
+#edit bashrc so "ll" works
+alias1="#alias ll='ls -l'"
+alias2="alias ll='ls -la'"
+aliasnew="s|$alias1|$alias2|"
+sed -i "$aliasnew" home/$USER/.bashrc
