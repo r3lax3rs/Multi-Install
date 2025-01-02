@@ -25,6 +25,7 @@ export kernel=`uname -r | awk {'print substr($0, length($0)-2, 3)'}` #zen or lts
 export linuxkernal=`uname -r | awk {'print substr($0, length($0)-6, 4)'}` #arch
 export cpu=`cat /proc/cpuinfo |grep vendor_id | awk '!seen[$0]++' | awk {'print $3'}`
 export mygpu=`lspci -v |grep VGA | awk {'print $5'}`
+export whichOS=$(cat /etc/*release | grep PRETTY_NAME | cut -d '=' -f2- | tr -d '"' | awk '{print $1}')
 #Make a better looking PS1 by replacing .bashrc: (test if this also works on other OS' beside arch)
 mv /home/$USER/ArchInstallScript/.bashrc /home/$USER/
 wait
