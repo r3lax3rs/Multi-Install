@@ -131,9 +131,21 @@ fi
 #Install Google Chrome
 yay -S google-chrome --needed --noconfirm
 #Install NordVPN
-yay -S nordvpn-bin --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    yay -S nordvpn-bin --needed --noconfirm
+elif [[ "$whichOS" == "Debian" | "$whichOS" == "Ubuntu" | "$whichOS" == "Rocky" ]]; then
+    sh <(curl -sSf https://downloads.nordcdn.com/apps/linux/install.sh) #sh <(wget -qO - https://downloads.nordcdn.com/apps/linux/install.sh)   ---> Different one if the curl one doesnt work
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi    
 #Install Teamspeak3
-printf "%s\n" "$PWonce" | sudo -S pacman -S teamspeak3 --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S teamspeak3 --needed --noconfirm
+else
+    echo -e "${Red}No normal installer available${Cyan}"
+    echo -e "${Cyan}You can go to ${Red}teamspeak.com${Cyan} & download the 64bit linux client${Cyan}"
+    sleep 5
+fi
 #Install Telegram Desktop App
 printf "%s\n" "$PWonce" | sudo -S pacman -S telegram-desktop --needed --noconfirm
 #Install Geany (notepad)
