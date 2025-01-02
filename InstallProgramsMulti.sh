@@ -251,16 +251,20 @@ else
     echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
 fi
 #Install everything needed for QEMU/KVM Virtmanager
-printf "%s\n" "$PWonce" | sudo -S pacman -S qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf dnsmasq swtpm guestfs-tools libosinfo tuned --noconfirm --needed
-wait
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf dnsmasq swtpm guestfs-tools libosinfo tuned --noconfirm --needed
+    wait
 #Enable services for Virtmanager
-printf "%s\n" "$PWonce" | sudo -S systemctl enable libvirtd.service
-wait
-printf "%s\n" "$PWonce" | sudo -S systemctl start libvirtd.service
-echo "QEMU/KVM Virtmanager has been installed"
-wait
+    printf "%s\n" "$PWonce" | sudo -S systemctl enable libvirtd.service
+    wait
+    printf "%s\n" "$PWonce" | sudo -S systemctl start libvirtd.service
+    echo -e "${Cyan}QEMU/KVM Virtmanager has been installed"
+    wait
 #Enable virt manager thing that causes an error after a reboot and you want to start it:
 printf "%s\n" "$PWonce" | sudo -S virsh net-autostart default
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi
 #Installing VIM (if it's not yet on there already)
 printf "%s\n" "$PWonce" | sudo -S pacman -S vim --needed --noconfirm
 #VIM Configuration:
