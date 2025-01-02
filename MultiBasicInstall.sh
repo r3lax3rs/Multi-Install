@@ -148,6 +148,8 @@ debiancd="deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Bin
 debianNOcd="#deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Binary-1 with firmware 20241109-11:05]/ bookworm contrib main non-free-firmware"
 debiannew="s|$debiancd|$debianNOcd|"
 sed -i "$debiannew" /etc/apt/sources.list
+#First time update
+sudo apt-get update && sudo apt-get upgrade
 #Install git & vim
 sudo apt-get install git vim
 #edit bashrc so "ll" works
