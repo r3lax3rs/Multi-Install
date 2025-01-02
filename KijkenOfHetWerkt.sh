@@ -165,8 +165,20 @@ else
 fi
 wait
 #Editing GRUB config for Intel+Nvidia
-if [[ "$cpu" == "$intel" ]] && [[ "$mygpu" == "NVIDIA" ]]; then
+if [[ "$cpu" == "$intel" ]] && [[ "$mygpu" == "NVIDIA" && "$whichOS" == "Arch" ]]; then
     sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 udev.log=priority=3 nvidia_drm.modeset=1 nvidia-drm.fbdev=1 ibt=off"/' /etc/default/grub
+    echo -e "${Cyan}lines have been added to /etc/default/grub${Reset}"
+elif
+    [[ "$cpu" == "$intel" ]] && [[ "$mygpu" == "NVIDIA" && "$whichOS" == "Rocky" ]]; then
+    echo >> /etc/default/grub GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 udev.log=priority=3 nvidia_drm.modeset=1 nvidia-drm.fbdev=1 ibt=off"
+    echo -e "${Cyan}lines have been added to /etc/default/grub${Reset}"
+elif
+    [[ "$cpu" == "$intel" ]] && [[ "$mygpu" == "NVIDIA" && "$whichOS" == "Ubuntu" ]]; then
+    sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 udev.log=priority=3 nvidia_drm.modeset=1 nvidia-drm.fbdev=1 ibt=off"/' /etc/default/grub
+    echo -e "${Cyan}lines have been added to /etc/default/grub${Reset}"
+elif
+    [[ "$cpu" == "$intel" ]] && [[ "$mygpu" == "NVIDIA" && "$whichOS" == "Debian" ]]; then
+    sed -i 's/GRUB_CMDLINE_LINUX_DEFAULT="quiet"/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash loglevel=3 udev.log=priority=3 nvidia_drm.modeset=1 nvidia-drm.fbdev=1 ibt=off"/' /etc/default/grub
     echo -e "${Cyan}lines have been added to /etc/default/grub${Reset}"
 fi
 wait
