@@ -105,6 +105,10 @@ elif [[ "$linuxkernel" == "arch" ]] && "$mygpu" == "NVIDIA" ]]; then
     echo "default linux kernel & Nvidia detected; will install nvidia"
     sleep 2
     pacman -S nvidia --needed --noconfirm
+else
+    echo -e "${Red}You have something else installed. Either another distro or another brand videocard!${Cyan}"
+    echo -e "${Cyan}Your distro is ${Red}${whichOS}${Cyan} & your gpu is ${Red}${mygpu}${Cyan}"
+    echo -e "${Red}Will do nothing & continue script!${Cyan}"
 fi
 wait
 #Cehck if /etc/pacman.d/hooks/ directory exists; if not adding hooks map
