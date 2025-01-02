@@ -31,6 +31,20 @@ else
     sleep 10
 fi
 wait
+#Install curl and wget:
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S curl --needed --noconfirm
+    printf "%s\n" "$PWonce" | sudo -S pacman -S wget --needed --noconfirm
+elif [[ "$whichOS" == "Debian" | "$whichOS" == "Ubuntu" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S apt install curl -y
+    printf "%s\n" "$PWonce" | sudo -S apt install wget -y
+elif [[ "$whichOS" == "Rocky" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S dnf install curl -y
+    printf "%s\n" "$PWonce" | sudo -S dnf install wget -y
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+    sleep 5
+fi
 #Before we are gong to install yay, lets download dependencies
 #This way makepkg wont invoke pw for dependencies
 if [[ "$whichOS" == "Arch" ]]; then
@@ -168,8 +182,6 @@ fi
 printf "%s\n" "$PWonce" | sudo -S pacman -S telegram-desktop --needed --noconfirm
 #Install Geany (notepad)
 printf "%s\n" "$PWonce" | sudo -S pacman -S geany --needed --noconfirm
-#Install curl
-printf "%s\n" "$PWonce" | sudo -S pacman -S curl --needed --noconfirm
 #Install OpenTabletDriver
 #First lets install dependencies
 printf "%s\n" "$PWonce" | sudo -S pacman -S netstandard-targeting-pack dotnet-targeting-pack netstandard-targeting-pack oniguruma dotnet-sdk libcom_err.so libverto-module-base sh libreadline.so libgdbm.so libncursesw.so gcc-libs glibc icu krb5 libunwind linux-api-headers openssl zlib bash e2fsprogs keyutils libcom_err.so libldap lmdb xz libsasl readline util-linux-libs gdbm ncurses sqlite jq --noconfirm
