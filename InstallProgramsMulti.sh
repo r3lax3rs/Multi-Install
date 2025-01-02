@@ -14,7 +14,22 @@ wait
 #Should make it so that we have to fill in our PW only once
 read -p "Password: " -s PWonce
 #First lets make sure our system is updated
-printf "%s\n" "$PWonce" | sudo -S pacman -Syu --noconfirm
+#First lets do a first time update of our system
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -Syu --noconfirm
+elif [[ "$whichOS" == "Rocky" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S dnf update && sudo dnf upgrade
+elif [[ "$whichOS" == "Ubuntu" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S apt update && sudo apt upgrade
+elif [[ "$whichOS" == "Debian" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S apt-get update && sudo apt-get upgrade
+else
+    clear
+    echo -e "${Red}Cant update system since your OS is not supported by this script!${Cyan}"
+    echo -e "${Cyan}You have ${Red}${whichOS}${Cyan}installed."
+    echo -e "${Red}Please update manually before continuing this script${Cyan}"
+    sleep 10
+fi
 wait
 #Before we are gong to install yay, lets download dependencies
 #This way makepkg wont invoke pw for dependencies
@@ -32,7 +47,42 @@ yay -Syu --noconfirm
 wait
 #Let's install our programs
 #Install Brave Browser
-yay -S brave-bin --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    yay -S brave-bin --needed --noconfirm
+elif [[ "$whichOS" == "Debian" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S apt install curl
+    wait
+    printf "%s\n" "$PWonce" | sudo -S curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    wait
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt update
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt install brave-browser
+    wait
+elif [[ "$whichOS" == "Ubuntu" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S apt install curl
+    wait
+    printf "%s\n" "$PWonce" | sudo -S curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+    wait
+    echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt update
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt install brave-browser
+    wait
+elif [[ "$whichOS" == "Rocky" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S dnf install dnf-plugins-core
+    wait
+    printf "%s\n" "$PWonce" | sudo -S dnf config-manager --add-repo https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo
+    wait
+    printf "%s\n" "$PWonce" | sudo -S dnf install brave-browser
+    wait
+else
+    echo -e "${Cyan}Your OS: ${Red}${whichOS}${Cyan} is not yet supported by this script."
+    echo -e "${Red}Script will continue...${Cyan}"
+    sleep 3
+fi
 #Install Steam
 printf "%s\n" "$PWonce" | sudo -S pacman -S steam --needed --noconfirm
 #Install Discord
