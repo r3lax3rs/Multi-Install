@@ -62,12 +62,12 @@ elif [[ "$whichOS" == "Debian" ]]; then
     wait
     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
     wait
-    printf "%s\n" "$PWonce" | sudo -S apt update
+    printf "%s\n" "$PWonce" | sudo -S apt update -y
     wait
-    printf "%s\n" "$PWonce" | sudo -S apt install brave-browser
+    printf "%s\n" "$PWonce" | sudo -S apt install brave-browser -y
     wait
 elif [[ "$whichOS" == "Ubuntu" ]]; then
-    printf "%s\n" "$PWonce" | sudo -S apt install curl
+    printf "%s\n" "$PWonce" | sudo -S apt install curl -y
     wait
     printf "%s\n" "$PWonce" | sudo -S curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
     wait
@@ -108,7 +108,7 @@ elif [[ "$whichOS" == "Debian" ]]; then
     wait
     printf "%s\n" "$PWonce" | sudo -S apt install steam-launcher -y
 elif [[ "$whichOS" == "Ubuntu" ]]; then
-    printf "%s\n" "$PWonce" | sudo -S apt install steam
+    printf "%s\n" "$PWonce" | sudo -S apt install steam -y
 else
     echo -e "${Cyan}You have another distro, OS: ${Red}${whichOS}${Cyan}"
     echo -e "${Red}You have to install manually!${Cyan}"
@@ -117,7 +117,17 @@ fi
 #Install Discord
 printf "%s\n" "$PWonce" | sudo -S pacman -S discord --needed --noconfirm
 #Install Spotify
-yay -S spotify --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    yay -S spotify --needed --noconfirm
+elif [[ "$whichOS" == "Debian" | "$whichOS" == "Ubuntu" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S curl -sS https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+    wait
+    printf "%s\n" "$PWonce" | sudo -S echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
+    wait
+    printf "%s\n" "$PWonce" | sudo -S apt-get update && printf "%s\n" "$PWonce" | sudo -S apt-get install spotify-client -y
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi  
 #Install Google Chrome
 yay -S google-chrome --needed --noconfirm
 #Install NordVPN
