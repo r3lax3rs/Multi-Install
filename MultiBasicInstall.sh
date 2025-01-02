@@ -143,6 +143,7 @@ wait
 #
 #
 #Debian install
+#$whichOS should work
 #Commenting part that searches on a cdrom instead of searching the internet
 debiancd="deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Binary-1 with firmware 20241109-11:05]/ bookworm contrib main non-free-firmware"
 debianNOcd="#deb cdrom:[Debian GNU/Linux 12.8.0 _Bookworm_ - Official amd64 DVD Binary-1 with firmware 20241109-11:05]/ bookworm contrib main non-free-firmware"
@@ -157,3 +158,12 @@ alias1="#alias ll='ls -l'"
 alias2="alias ll='ls -la'"
 aliasnew="s|$alias1|$alias2|"
 sed -i "$aliasnew" home/$USER/.bashrc
+#Install ucode for either intel/amd
+if [[ "$cpu" == "$intel" ]]; then
+    sudo apt-get install intel-microcode
+else [[ "$cpu" == "$AMDCPU" ]]; then
+    sudo apt-get install amd64-microcode
+else
+    echo -e "${Red}Skipping microcode install!${Cyan}"
+    sleep 3
+fi
