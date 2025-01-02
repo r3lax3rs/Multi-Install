@@ -283,7 +283,16 @@ else
     echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
 fi
 #Installing VIM (if it's not yet on there already)
-printf "%s\n" "$PWonce" | sudo -S pacman -S vim --needed --noconfirm
+if [[ "$whichOS" == "Arch" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S pacman -S vim --needed --noconfirm
+    wait
+elif [[ "$whichOS" == "Ubuntu" | "$whichOS" == "Debian" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S apt install vim -y
+elif [[ "$whichOS" == "Rocky" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S dnf install vim -y
+else
+    echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
+fi
 #VIM Configuration:
 mv -i /home/$USER/ArchInstallScript/.vimrc /home/$USER/
 #Installing the part that is needed to share clipboard for VM's
