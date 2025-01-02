@@ -127,10 +127,14 @@ fi
 wait
 #Cehck if /etc/pacman.d/hooks/ directory exists; if not adding hooks map
 if [ -d "/etc/pacman.d/hooks/" ]; then
-    echo -e "${Cyan}Directory already exists, ${Reset}will continue to copy nvidia.hook"
-elif [ ! -d "/etc/pacman.d/hooks/" ]; then
+    echo -e "${Cyan}Directory already exists!${Reset}"
+elif [[ "$whichOS" == "Arch" ]] && [[ "$kernel" != "zen" ]] && [ ! -d "/etc/pacman.d/hooks/" ]; then
     mkdir "/etc/pacman.d/hooks"
-    echo "Directory hooks has been added; will copy nvidia.hook next"
+    wait
+    cp /home/$USER/ArchInstallScript/nvidia.hook /etc/pacman.d/hooks/
+    echo -e "${Cyan}Directory was made & nvidia.hook has been added!"
+else
+    echo -e "${Cyan}You are not using Arch but ${Red}${whichOS}${Cyan}. Skipping this part..."
 fi
 wait
 #Adding Nvidia hook for updates
@@ -140,22 +144,24 @@ wait
 old_path="#HookDir     = /etc/pacman.d/hooks/"
 new_path="HookDir     = /etc/pacman.d/hooks/"
 sed_hook="s|$old_path|$new_path|"
-if [[ "$kernel" == "zen" && "$mygpu" == "NVIDIA" ]]; then
+if [[ "$kernel" == "zen" && "$mygpu" == "NVIDIA" && "$whichOS" == "Arch" ]]; then
     echo -e "${Cyan}Hooks are not needed for DKMS versions; will already go automaticly${Reset}"
-elif [[ "$kernel" == "lts" ]] && "$mygpu" == "NVIDIA" ]]; then
+elif [[ "$kernel" == "lts" ]] && "$mygpu" == "NVIDIA" && "$whichOS" == "Arch" ]]; then
     sed -i 's/Target=nvidia-dkms/Target=nvidia-lts/' /etc/pacman.d/hooks/nvidia.hook
     sed -i 's/Target=linux-zen/Target=linux-lts/' /etc/pacman.d/hooks/nvidia.hook
     sed -i "$sed_hook" /etc/pacman.conf
     echo -e "${Cyan}Config has been rewritten for linux-lts & nvidia-lts${Reset}"
     sleep 2
-elif [[ "$linuxkernel" == "arch" ]] && [[ "$mygpu" == "NVIDIA" ]]; then
+elif [[ "$linuxkernel" == "arch" ]] && [[ "$mygpu" == "NVIDIA" && "$whichOS" == "Arch" ]]; then
     sed -i 's/Target=nvidia-dkms/Target=nvidia/' /etc/pacman.d/hooks/nvidia.hook
     sed -i 's/Target=linux-zen/Target=linux/' /etc/pacman.d/hooks/nvidia.hook
     sed -i "$sed_hook" /etc/pacman.conf
     echo -e "${Cyan}Config has been rewritten for linux default kernal and default nvidia drivers${Reset}"
 else
-    echo -e "${Red}You don't have zen, lts or default linux kernel. Exiting!${Reset}"
-    sleep 3
+    echo -e "${Red}You don't have zen, lts, default linux kernel OR you are not using Arch.${Cyan}"
+    echo -e "${Cyan}You are using: ${Red}${whichOS}${Cyan} with kernel: ${Red}${kernel}${Cyan}"
+    echo -e "${Red}Skipping this step!${Cyan}"
+    sleep 10
 fi
 wait
 #Editing GRUB config for Intel+Nvidia
