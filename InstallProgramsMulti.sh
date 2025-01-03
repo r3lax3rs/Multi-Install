@@ -267,7 +267,8 @@ elif [[ "$whichOS" == "openSUSE" ]]; then
 else
     echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
 fi
-#Install everything needed for QEMU/KVM Virtmanager
+##########Install everything needed for QEMU/KVM Virtmanager##########
+##########Qemu/KVM Virtmanager for Arch##########
 if [[ "$whichOS" == "Arch" ]]; then
     printf "%s\n" "$PWonce" | sudo -S pacman -S qemu-full qemu-img libvirt virt-install virt-manager virt-viewer edk2-ovmf dnsmasq swtpm guestfs-tools libosinfo tuned --noconfirm --needed
     wait
@@ -279,6 +280,31 @@ if [[ "$whichOS" == "Arch" ]]; then
     wait
 #Enable virt manager thing that causes an error after a reboot and you want to start it:
     printf "%s\n" "$PWonce" | sudo -S virsh net-autostart default
+##########Qemu/KVM Virtmanager for Debian##########
+elif [[ "$whichOS" == "Debian" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S apt install qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils virtinst libvirt-daemon virt-manager -y
+    wait
+#Give user permisions to use libvirt & libvirt-qemu
+    printf "%s\n" "$PWonce" | sudo -S adduser $USER libvirt
+    wait
+    printf "%s\n" "$PWonce" | sudo -S adduser $USER libvirt-qemu
+    wait
+#Refresh/reload group membership
+    newgrp libvirt
+    newgrp libvirt-qemu
+#You can run "virsh net-list --all" to see the available networks for KVM VM's
+    printf "%s\n" "$PWonce" | sudo -S virsh net-start default
+    wait
+    printf "%s\n" "$PWonce" | sudo -S virsh net-autostart default
+    wait
+#If you want to offload the mechanism of “virtio-net” and want to improve the performance of KVM VMs then add “vhost_net” kernel module on your system using the beneath command
+    printf "%s\n" "$PWonce" | sudo -S modprobe vhost_net
+    wait
+#Create Network Bridge for KVM VM's
+    printf "%s\n" "$PWonce" | sudo -S apt install -y resolvconf
+#Creating a network (ill do this later: https://www.linuxtechi.com/how-to-install-kvm-on-debian/ )
+#After that is done
+#printf "%s\n" "$PWonce" | sudo -S systemctl restart networking
 else
     echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
 fi
