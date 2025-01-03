@@ -65,6 +65,8 @@ elif [[ "$whichOS" == "Ubuntu" ]]; then
     sudo apt update && sudo apt upgrade
 elif [[ "$whichOS" == "Debian" ]]; then
     sudo apt-get update && sudo apt-get upgrade
+elif [[ "$whichOS" == "openSUSE" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S zypper dup -y
 else
     clear
     echo -e "${Red}Cant update system since your OS is not supported by this script!${Cyan}"
