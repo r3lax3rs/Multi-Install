@@ -25,6 +25,8 @@ elif [[ "$whichOS" == "Ubuntu" ]]; then
     printf "%s\n" "$PWonce" | sudo -S apt update && sudo apt upgrade
 elif [[ "$whichOS" == "Debian" ]]; then
     printf "%s\n" "$PWonce" | sudo -S apt-get update && sudo apt-get upgrade
+elif [[ "$whichOS" == "openSUSE" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S zypper dup -y
 else
     clear
     echo -e "${Red}Cant update system since your OS is not supported by this script!${Cyan}"
@@ -43,6 +45,9 @@ elif [[ "$whichOS" == "Debian" | "$whichOS" == "Ubuntu" ]]; then
 elif [[ "$whichOS" == "Rocky" ]]; then
     printf "%s\n" "$PWonce" | sudo -S dnf install curl -y
     printf "%s\n" "$PWonce" | sudo -S dnf install wget -y
+elif [[ "$whichOS" == "openSUSE" ]]; then
+    printf "%s\n" "$PWonce" | sudo -S zypper install -y curl
+    printf "%s\n" "$PWonce" | sudo -S zypper install -y wget
 else
     echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
     sleep 5
