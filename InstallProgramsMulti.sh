@@ -141,6 +141,8 @@ if [[ "$whichOS" == "Arch" ]]; then
 else
     echo -e "${Red}No support for your OS at the moment! Maybe it will be added at a later time.${Cyan}"
 fi
+#Install Vesktop (Better Discord alternative for Linux + Screen&Game capture works) -> Still have to test if this works! This should work on any Distro, test this aswell!
+#sh -c "$(curl -sS https://raw.githubusercontent.com/Vendicated/VencordInstaller/main/install.sh)"
 #Install Spotify
 if [[ "$whichOS" == "Arch" ]]; then
     yay -S spotify --needed --noconfirm
